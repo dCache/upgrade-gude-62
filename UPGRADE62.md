@@ -19,3 +19,70 @@ How to get from dCache 5.2 to dCache 6.2
 - SciToken with XrootD
 - Java 11
 - systemd based packages
+
+## Breaking changes
+
+### Zookeeper
+
+The dCache uses apache zookeeper for service discovery and coordination. Starting from version 6.2 the zookeeper 3.5.x is required. With this version jump, zookeeper supports TLS for communications between other zookeeper nodes as well as between zookeeper clients and server. This allows to make the whole dcache inter-componentt communication to be TLS protected, which is important for geo-distributed deployments over public networks.
+
+The rpm packages with latest supported zookeeper server versions can be obtained from dcache.org yum repository:
+
+```
+[dcache-org-zk]
+name=dCache.ORG zookeeper packages
+baseurl=https://download.dcache.org/nexus/repository/zookeeper-rpms/el7/noarch
+gpgcheck=0
+enabled=1
+```
+
+### Java 11
+
+Java 11 is the current LTS release of java runtime environment, that is required by dCache. In addition to language level changes for developers, the new JVM brings improvements for monitoring, integration with containers and debugging. For example, the jvm inspection tool [Flight Recorder](https://jdk.java.net/jmc/) is now available as a part of openJDK, the java thread names ca be shown by system tools, like `top -H <pid>` and with new JVM options `-XX:+PreserveFramePointer` the system profiler `perf` can collect and display method invocation statistics and call graphs.
+
+>The all dCache releases are developed and tested with OpenJDK, which is license/subscription free. To use Oracle JVM you need `Java SE Subscriptions`.
+
+### PostgreSQL
+
+The PostgreSQL DB is an essential part dCache. It powers the namespace, AKA Chimera, PinManager, Srm, space manger and billing.
+
+The minimal PostgeSQL version number supported by dCache is 9.5, which allows dCache use new SQL syntax to improve the DB operation performance.
+
+### Integration with systemd
+
+Starting from version 6.2 systemd is used to manage dCache service on the hosts. dCache uses systemd's generator functionality to create a service for each defined domain in the layout file. That's why, before starting the service all dynamic systemd units should be generated:
+
+```
+systemctl daemon-reload
+```
+
+> You need to regenerate dynamic units every time when new domains are added or removed as well as when systemd affected properties are modified. Those properties are:
+> - dcache.user
+> - dcache.java.options.extra
+> - dcache.restart.delay
+> - dcache.home
+> - dcache.java.library.path
+
+To inspect all generated units of dcache.target the `systemd list-dependencies` command can be used. For example:
+
+```console-root
+systemctl list-dependencies dcache.target
+dcache.target
+● ├─dcache@coreDomain.service
+● ├─dcache@gplazmaDomain.service
+● ├─dcache@namespaceDomain.service
+● ├─dcache@nfsDomain.service
+● ├─dcache@poolDomain.service
+● └─dcache@poolmanagerDomain.service
+```
+
+> NOTE: the log files are no longer created in */var/log/dcache* and have to be accessed with through system journal, like `journalctl -u dcache@coreDomain.service`
+
+To use the sysV-like `dcache [start|stop|status]` commands disable systemd for dCache by adding
+
+```
+dcache.systemd.strict=false
+```
+in *dcache.conf* or in the *layout() file.
+
+For more information check the install chapter in the dcache book.
