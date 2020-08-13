@@ -24,7 +24,7 @@ How to get from dCache 5.2 to dCache 6.2
 
 ### Zookeeper
 
-The dCache uses apache zookeeper for service discovery and coordination. Starting from version 6.2 the zookeeper 3.5.x is required. With this version jump, zookeeper supports TLS for communications between other zookeeper nodes as well as between zookeeper clients and server. This allows to make the whole dcache inter-componentt communication to be TLS protected, which is important for geo-distributed deployments over public networks.
+The dCache uses apache zookeeper for service discovery and coordination. Starting from version 6.2 the zookeeper 3.5.x is required. With this version jump, zookeeper supports TLS for communications between other zookeeper nodes as well as between zookeeper clients and server. This allows to make the whole dcache inter-component communication to be TLS protected, which is important for geo-distributed deployments over public networks.
 
 The rpm packages with latest supported zookeeper server versions can be obtained from dcache.org yum repository:
 
