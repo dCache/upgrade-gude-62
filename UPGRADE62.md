@@ -83,6 +83,19 @@ To use the sysV-like `dcache [start|stop|status]` commands disable systemd for d
 ```
 dcache.systemd.strict=false
 ```
-in *dcache.conf* or in the *layout() file.
+in *dcache.conf* or in the *layout* files.
 
 For more information check the install chapter in the dcache book.
+
+### pool
+
+The dCache pools stores the data in two places: a data file store and a complementary metadata store. The default metadata store was based on a pair of disk files for each data file. Over a decade a more effective BerkeleyDB-based metadata store was introduced and recommended for use in production. Now on, it becomes the default. To restore the old behavior add
+
+```
+pool.plugins.meta=org.dcache.pool.repository.meta.file.FileMetaDataRepository
+```
+into *dcache.conf* or *layout* files.
+
+The BerkeleyDB-based metadata is enhanced with additional information which will be populated on pool start. Thus the very first start of the pools after upgrade to version 6.2 will take more time.
+
+With introduction of `dCache zones`, the **zone** become a keyword and can't be used as a pool tag.
