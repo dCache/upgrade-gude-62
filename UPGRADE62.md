@@ -109,3 +109,24 @@ The following properties have changed their default values:
 dcache.enable.authn.anonymous-fallback-on-failed-login | false
 pool.plugins.meta | org.dcache.pool.repository.meta.db.BerkeleyDBMetaDataRepository
 dcache.kafka.maximum-block | 60
+
+## New services
+
+### Telemetry
+
+`Telememetry` is an optional service is added to collect statistics about running instances around the world. The telemetry cell has to be explicitly defined in a layout file as well as enabled:
+
+```
+[telemetryDomain]
+[telemetryDomain/telemetry]
+telemetry.cell.enable=true
+telemetry.instance.site-name=dCache instance on \${host.name}
+telemetry.instance.location.latitude=53.5772
+telemetry.instance.location.longitude=9.8772
+```
+
+The dcache version, online capacity, site name and optional location will be sent to the stats.dcache.org collector.
+
+The dCache.org kindly asks sites to enable telemetry service to let developers to see the deployments and version popularity.
+
+> Though we don't collect any personal information, please consult you site security officer before enabling the service.
