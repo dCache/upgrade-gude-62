@@ -50,7 +50,11 @@ The minimal PostgeSQL version number supported by dCache is 9.5, which allows dC
 
 ### Integration with systemd
 
-Starting from version 6.2 systemd is used to manage dCache service on the hosts. dCache uses systemd's generator functionality to create a service for each defined domain in the layout file. That's why, before starting the service all dynamic systemd units should be generated:
+Starting from version 3.2.0 dcache domain processes can be managed as systemd services. However, this functionality was available for debian-based systems only.
+
+> As we have changed the grouping unit from `dcache.service` to `dcache.target`, debian based installations have to manually stop dcache.service before installing new package and use dcache.target in the future.
+
+dCache uses systemd's generator functionality to create a service for each defined domain in the layout file. That's why, before starting the service all dynamic systemd units should be generated:
 
 ```
 systemctl daemon-reload
@@ -65,7 +69,7 @@ systemctl daemon-reload
 
 To inspect all generated units of dcache.target the `systemd list-dependencies` command can be used. For example:
 
-```console-root
+```
 systemctl list-dependencies dcache.target
 dcache.target
 ● ├─dcache@coreDomain.service
