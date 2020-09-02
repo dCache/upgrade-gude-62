@@ -54,7 +54,7 @@ Starting from version 3.2.0 dcache domain processes can be managed as systemd se
 
 > As we have changed the grouping unit from `dcache.service` to `dcache.target`, debian based installations have to manually stop dcache.service before installing new package and use dcache.target in the future.
 
-dCache uses systemd's generator functionality to create a service for each defined domain in the layout file. That's why, before starting the service all dynamic systemd units should be generated:
+dCache uses systemd's generator functionality to create a service for each defined domain in the layout file. That's why, before starting the service all dynamic systemd units should be generated. As generator runs in a restricted environment, ensure that `/usr/bin/java` points to a valid `java11` binary.
 
 ```
 systemctl daemon-reload
