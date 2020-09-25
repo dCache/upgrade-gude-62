@@ -38,7 +38,7 @@ enabled=1
 
 ### Java 11
 
-Java 11 is the current LTS release of java runtime environment, that is required by dCache. In addition to language level changes for developers, the new JVM brings improvements for monitoring, integration with containers and debugging. For example, the jvm inspection tool [Flight Recorder](https://jdk.java.net/jmc/) is now available as a part of openJDK, the java thread names ca be shown by system tools, like `top -H <pid>` and with new JVM options `-XX:+PreserveFramePointer` the system profiler `perf` can collect and display method invocation statistics and call graphs.
+Java 11 is the current LTS release of java runtime environment, that is required by dCache. In addition to language level changes for developers, the new JVM brings improvements for monitoring, integration with containers and debugging. For example, the jvm inspection tool [Flight Recorder](https://jdk.java.net/jmc/) is now available as a part of openJDK, the java thread names can be shown by system tools, like `top -H <pid>` and with new JVM options `-XX:+PreserveFramePointer` the system profiler `perf` can collect and display method invocation statistics and call graphs.
 
 >The all dCache releases are developed and tested with OpenJDK, which is license/subscription free. To use Oracle JVM you need `Java SE Subscriptions`.
 
