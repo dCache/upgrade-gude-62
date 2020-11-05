@@ -80,7 +80,7 @@ dcache.target
 ● └─dcache@poolmanagerDomain.service
 ```
 
-> NOTE: the log files are no longer created in */var/log/dcache* and have to be accessed with through system journal, like `journalctl -u dcache@coreDomain.service`
+> NOTE: by default, the log files are no longer created in */var/log/dcache* and have to be accessed with through system journal, like `journalctl -u dcache@coreDomain.service`. To (partially) restore logfile functinality check the `dcache.log.destination` option.
 
 To use the sysV-like `dcache [start|stop|status]` commands disable systemd for dCache by adding
 
