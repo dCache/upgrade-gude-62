@@ -82,6 +82,19 @@ dcache.target
 
 > NOTE: by default, the log files are no longer created in */var/log/dcache* and have to be accessed with through system journal, like `journalctl -u dcache@coreDomain.service`. To (partially) restore logfile functinality check the `dcache.log.destination` option.
 
+### systemd cheatsheet
+
+Command | Description
+:--- | :---
+systemctl start/stop/status/enable dcache.target | Execute the command for all defined domains
+systemctl start/stop/status/enable dcache@xxx.service | Execute the command for a specified single domain
+journalctl -u dcache@xxx.service | Access the logs of a specified domain
+systemctl list-dependencies dcache.target | List all defined domains
+systemctl daemon-reload | Re-generate domain units
+systemctl daemon-reexec | Restart systemd daemon it it crashed config error
+
+### Disabling systemd
+
 To use the sysV-like `dcache [start|stop|status]` commands disable systemd for dCache by adding
 
 ```
