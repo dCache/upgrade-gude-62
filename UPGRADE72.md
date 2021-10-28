@@ -9,17 +9,10 @@ How to get from dCache 6.2 to dCache 7.2
 
 ### The highlights in 7.2 compared with 6.2
 
-- bulk cache file cleanup on space pressure
-- fifo/lifo capability of the flush queue
-- TLS on p2p
-- better support for distributed setups
-- experimental internal message serialization format for better HPC support
-- basic support for extended attributes
-- full TLS support for all internal messages
-- new telemetry service
-- SciToken with XrootD
-- Java 11
-- systemd based packages
+-  quota system 
+-  support for file labels
+-  a dedicated scheduling strategy for bring-online requests in SRM-Manager
+-  cleaner.limits.threads property now also controls the number of pools processed in parallel.
 
 ## Breaking changes
 
