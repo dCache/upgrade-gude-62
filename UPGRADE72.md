@@ -12,9 +12,20 @@ How to get from dCache 6.2 to dCache 7.2
 -  quota system 
 -  support for file labels
 -  a dedicated scheduling strategy for bring-online requests in SRM-Manager
--  cleaner.limits.threads property now also controls the number of pools processed in parallel.
+
 
 ## Breaking changes
+
+
+### Configuration properties
+For File system statistics added functionality to cache total files and total space used on DB backend. 
+The following two properties has been added:
+
+
+| property  | new value |
+|:----------|-------:|
+pnfsmanager.fs-stat-cache.time | 3600
+pnfsmanager.fs-stat-cache.time.unit | SECONDS
 
 
 ## New services
