@@ -44,6 +44,24 @@ The argument of `kill client` accepts the client's session id. For instance, to 
 ```
 [dcache-lab000] (NFS-dcache-lab007@core-dcache-lab007) admin > kill client 5f4ccad3000300010000000000000001
 ```
+## Runtime environment
+
+### Java flight recorder
+
+When debugging an issue on a running system often we need to collect jvm performance stats with ‘Java flight recorder’. Starting from release 7.2 the Java flight recorder attach listener is enabled by default. Site admins can collect and provide developers with additional information when high CPU load or memory consuption is observed as:
+
+jcmd <pid> JFR.start duration=60s filename=/tmp/dcache.jfr,
+
+    Please note, that jcmd command is a part of java-11-openjdk-devel package (on RHEL and clones)
+
+### Handling of OutOfMemoryError
+
+Depending which thread have received OutOfMemoryError the JVM might or might not exit. In a later cache, dCache might remain in an unpredictable state, where a component might be exposed as functional when its not.
+
+With 7.2 we have update the java options to include ExitOnOutOfMemoryError, which forces JVM to exit when an OOM is detected.
+
+    NOTE: There are several situations when jvm generates an OutOfMemoryError. The ExitOnOutOfMemoryError option works ONLY when allocation in heap space fails.
+
 
 ## New services
 
