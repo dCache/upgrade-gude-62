@@ -76,3 +76,15 @@ With 7.2 we have update the java options to include ExitOnOutOfMemoryError, whic
 
 ## New services
 
+### SrmManager tape recall scheduling strategy
+
+Optimally recalling data from tape is achieved by reducing the number of tape mounts and on-tape seeks by recalling as much volume as possible per mount. To that end a dedicated scheduling strategy exclusively for bring-online requests is introduced in the SrmManager. It is capable of clustering requests by tape according to a set of configurable criteria before passing them on to the rest of the system. In its current state it requires two files with information on targeted tapes, their capacity and occupancy as well as the mapping of tape-resident files to tape name. The file formats are described in the book.
+
+The scheduler can be activated by adding the following line to the srmmanager section of the properties file:
+
+`srmmanager.plugins.enable-bring-online-clustering = true`
+
+and configured as described in the book.
+
+It is important to note that the scheduler can only be effective when a dCache instance contains exactly one SrmManager.
+
