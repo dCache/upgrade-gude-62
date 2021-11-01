@@ -45,7 +45,7 @@ The argument of `kill client` accepts the client's session id. For instance, to 
 [dcache-lab000] (NFS-dcache-lab007@core-dcache-lab007) admin > kill client 5f4ccad3000300010000000000000001
 ```
 
-### Cleaner
+### Cleaner chunking and parallel cleaning
 
 The HsmCleaner regularly fetches HSM locations for deletion from the trash table and caches them locally for batched dispatch. The maximum number of cached delete locations can now be limited in order to prevent running out of memory if the trash table is too large. The default value is `cleaner.limits.hsm-max-cached-locations = 12000`.
 
@@ -53,6 +53,20 @@ Previously, the DiskCleaner could run out of memory if the number of delete loca
 
 Previously, pools were cleaned synchronously one after another by the cleaner service. Doing so in parallel is expected to provide performance benefits.
 The property `cleaner.limits.threads` now also controls the number of pools processed in parallel.
+
+### PinManager unpinning chunking and new pin states
+
+The pinmanager service regularly runs background processes for expiring and removing pins. For several reasons, large numbers of pins to be unpinned may accumulate in the PinManager’s trash table, primarily if the mentioned processes are not running for a longer time, thus threatening to overwhelm the system by trying to execute all unpin tasks in one go.
+
+This version introduces ‘chunked unpinning’, with which only a certain configurable number of available unpin tasks will be handled per run. This number can be configured: `pinmanager.max-unpins-per-run=200`
+
+Additionally, two new pin states are added: `READY_TO_UNPIN`, which is the initial state for an expired pin, and `FAILED_TO_UNPIN`, into which a pin transitions when the unpin attempt failed. Only pins in state `READY_TO_UNPIN` are selected for processing.
+
+Therefore a new process regularly resets all pins in state `FAILED_TO_UNPIN` back to state `READY_TO_UNPIN` in order to make them eligible to be attempted again. The period in which to reset all pins that failed to unpin can be configured as well:
+```
+pinmanager.reset-failed-unpins-period=2
+pinmanager.reset-failed-unpins-period.unit=HOURS
+```
 
 
 ## Runtime environment
