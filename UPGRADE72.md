@@ -44,6 +44,17 @@ The argument of `kill client` accepts the client's session id. For instance, to 
 ```
 [dcache-lab000] (NFS-dcache-lab007@core-dcache-lab007) admin > kill client 5f4ccad3000300010000000000000001
 ```
+
+### Cleaner
+
+The HsmCleaner regularly fetches HSM locations for deletion from the trash table and caches them locally for batched dispatch. The maximum number of cached delete locations can now be limited in order to prevent running out of memory if the trash table is too large. The default value is `cleaner.limits.hsm-max-cached-locations = 12000`.
+
+Previously, the DiskCleaner could run out of memory if the number of delete locations in the trash table was too large. This is now fixed.
+
+Previously, pools were cleaned synchronously one after another by the cleaner service. Doing so in parallel is expected to provide performance benefits.
+The property `cleaner.limits.threads` now also controls the number of pools processed in parallel.
+
+
 ## Runtime environment
 
 ### Java flight recorder
