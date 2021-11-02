@@ -11,7 +11,7 @@ How to get from dCache 6.2 to dCache 7.2
 
 -  quota system 
 -  support for file labels
--  a dedicated scheduling strategy for bring-online requests in SRM-Manager
+-  a dedicated scheduling strategy for bring-online requests in SrmManager
 -  extended attribute support with http and nfs
 
 
@@ -47,25 +47,30 @@ The argument of `kill client` accepts the client's session id. For instance, to 
 
 ### Cleaner chunking and parallel cleaning
 
-The HsmCleaner regularly fetches HSM locations for deletion from the trash table and caches them locally for batched dispatch. The maximum number of cached delete locations can now be limited in order to prevent running out of memory if the trash table is too large. The default value is `cleaner.limits.hsm-max-cached-locations = 12000`.
+The HSM cleaner regularly fetches HSM locations for deletion from the trash table and caches them locally for batched dispatch. The maximum number of cached delete locations can now be limited in order to prevent running out of memory if the trash table is too large. The default value is `cleaner.limits.hsm-max-cached-locations = 12000`.
 
-Previously, the DiskCleaner could run out of memory if the number of delete locations in the trash table was too large. This is now fixed.
+Previously, the disk cleaner could run out of memory if the number of delete locations in the trash table was too large. This is now fixed.
 
 Previously, pools were cleaned synchronously one after another by the cleaner service. Doing so in parallel is expected to provide performance benefits.
 The property `cleaner.limits.threads` now also controls the number of pools processed in parallel.
 
 ### PinManager unpinning chunking and new pin states
 
-The pinmanager service regularly runs background processes for expiring and removing pins. For several reasons, large numbers of pins to be unpinned may accumulate in the PinManager’s trash table, primarily if the mentioned processes are not running for a longer time, thus threatening to overwhelm the system by trying to execute all unpin tasks in one go.
+The PinManager service regularly runs background processes for expiring and removing pins. For several reasons, large numbers of pins to be unpinned may accumulate in the PinManager’s trash table, threatening to overwhelm the system due to PinManager trying to execute all unpin tasks in one go. Therefore, chunked unpinning is introduced, with which only a certain number of available unpin tasks will be handled per run. This number can be configured: `pinmanager.max-unpins-per-run=200`
 
-This version introduces ‘chunked unpinning’, with which only a certain configurable number of available unpin tasks will be handled per run. This number can be configured: `pinmanager.max-unpins-per-run=200`
+Additionally, two new pin states are added: `READY_TO_UNPIN`, which is the initial state for a pin that should be removed, and `FAILED_TO_UNPIN`, into which a pin transitions when the unpin attempt fails. Only pins in state `READY_TO_UNPIN` are selected for processing.
 
-Additionally, two new pin states are added: `READY_TO_UNPIN`, which is the initial state for an expired pin, and `FAILED_TO_UNPIN`, into which a pin transitions when the unpin attempt failed. Only pins in state `READY_TO_UNPIN` are selected for processing.
+A new process regularly resets all pins in state `FAILED_TO_UNPIN` back to state `READY_TO_UNPIN` in order to make them eligible to be attempted again. The period in which to reset all pins that failed to unpin can be configured as well:
 
-Therefore a new process regularly resets all pins in state `FAILED_TO_UNPIN` back to state `READY_TO_UNPIN` in order to make them eligible to be attempted again. The period in which to reset all pins that failed to unpin can be configured as well:
 ```
 pinmanager.reset-failed-unpins-period=2
 pinmanager.reset-failed-unpins-period.unit=HOURS
+```
+
+They can be manually reset to state `READY_TO_UNPIN` via the admin command; overall or for a specific pool
+
+```
+admin > \s PinManager retry unpinning
 ```
 
 
@@ -90,11 +95,11 @@ With 7.2 we have update the java options to include ExitOnOutOfMemoryError, whic
 
 ## New services
 
-### SrmManager tape recall scheduling strategy
+### SrmManager bring-online scheduling strategy
 
 Optimally recalling data from tape is achieved by reducing the number of tape mounts and on-tape seeks by recalling as much volume as possible per mount. To that end a dedicated scheduling strategy exclusively for bring-online requests is introduced in the SrmManager. It is capable of clustering requests by tape according to a set of configurable criteria before passing them on to the rest of the system. In its current state it requires two files with information on targeted tapes, their capacity and occupancy as well as the mapping of tape-resident files to tape name. The file formats are described in the book.
 
-The scheduler can be activated by adding the following line to the srmmanager section of the properties file:
+The scheduler can be activated by adding the following line to the SrmManager section of the properties file:
 
 `srmmanager.plugins.enable-bring-online-clustering = true`
 
