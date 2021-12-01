@@ -92,6 +92,14 @@ With 7.2 we have update the java options to include ExitOnOutOfMemoryError, whic
 
     NOTE: There are several situations when jvm generates an OutOfMemoryError. The ExitOnOutOfMemoryError option works ONLY when allocation in heap space fails.
 
+### Packaging
+
+Starting from dcache-7.2.5 the rpm package includes `rsyslog` configuration to produce classic log files in `/var/log/dcache` directory in addition to
+journal entries. To enable the logging into files the `/etc/systemd/journald.conf` should be configured as:
+
+```
+ForwardToSyslog=yes
+```
 
 ## New services
 
