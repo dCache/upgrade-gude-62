@@ -127,6 +127,10 @@ dcache.enable.authn.anonymous-fallback-on-failed-login | false
 pool.plugins.meta | org.dcache.pool.repository.meta.db.BerkeleyDBMetaDataRepository
 dcache.kafka.maximum-block | 60
 
+### Xroot Plugins
+
+The `cms-tfc` plugin now needs to be of version 4.0.4 or higher.
+
 ## New services
 
 ### Telemetry
