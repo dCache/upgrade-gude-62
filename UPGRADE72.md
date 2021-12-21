@@ -80,9 +80,11 @@ admin > \s PinManager retry unpinning
 
 When debugging an issue on a running system often we need to collect jvm performance stats with ‘Java flight recorder’. Starting from release 7.2 the Java flight recorder attach listener is enabled by default. Site admins can collect and provide developers with additional information when high CPU load or memory consuption is observed as:
 
-jcmd <pid> JFR.start duration=60s filename=/tmp/dcache.jfr,
+```
+jcmd <pid> JFR.start duration=60s filename=/tmp/dcache.jfr
+```
 
-    Please note, that jcmd command is a part of java-11-openjdk-devel package (on RHEL and clones)
+> Please note, that jcmd command is a part of java-11-openjdk-devel package (on RHEL and clones)
 
 ### Handling of OutOfMemoryError
 
@@ -90,7 +92,7 @@ Depending which thread have received OutOfMemoryError the JVM might or might not
 
 With 7.2 we have update the java options to include ExitOnOutOfMemoryError, which forces JVM to exit when an OOM is detected.
 
-    NOTE: There are several situations when jvm generates an OutOfMemoryError. The ExitOnOutOfMemoryError option works ONLY when allocation in heap space fails.
+> NOTE: There are several situations when jvm generates an OutOfMemoryError. The ExitOnOutOfMemoryError option works ONLY when allocation in heap space fails.
 
 ### Packaging
 
