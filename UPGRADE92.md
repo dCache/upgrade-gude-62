@@ -13,6 +13,20 @@ How to get from dCache 8.2 to dCache 9.2
 
 ## Breaking changes
 
+### General incompatibilities
+
+- the cleaner service, originally a single cell, now consists of two parts: one cell for disk cleaning (cleaner-disk), one for hsm cleaning (cleaner-hsm)
+- DCAP and NFS doors will fail the request if file’s storage unit is not configured in PoolManager
+- linklocal and localhost interfaces are not published by doors and pools
+- DCAP movers always start in passive mode
+- removed experimental message encoding format
+- removed default HSM operation timeout
+- Starting version 9.1 the nlink count for directories shows only number of subdirectories. Thus, the existing nlink count can be out-of-sync with we no automatic re-synchronization is performed.
+- dropped gplazma support for XACML
+- pool binds TCP port for http and xroot movers on startup
+
+
+
 ### Cleaner
 
 The `cleaner` service, originally a single cell, now consists of two parts: one cell for disk cleaning (`cleaner-disk`), one for hsm
