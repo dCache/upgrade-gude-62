@@ -1,4 +1,6 @@
-# The ultimate golden release upgrade guide, 9.2 edition
+# The ultimate golden release upgrade guide
+
+### Community effort to write an upgrade guide for dCache 9.2
 
 How to get from dCache 8.2 to dCache 9.2
 
