@@ -112,6 +112,10 @@ How to get from dCache 8.2 to dCache 9.2
     (since all initial targets are immediately batch stored synchronously)
     before the submission request returns.
 
+-   NOTE: Running more concurrent containers in Bulk means their files will be sliced. 
+          If it is important to keep most files in a request together for the purposes of staging optimization,
+          then the max concurrency in Bulk should be turned down. It could even be set at 1 
+	  (essentially one request at a time) if necessary.
 
 ### Cleaner
 
@@ -315,8 +319,6 @@ Resilience is still available in 9.2, but should be considered as superseded by 
 QoS services.   We encourage you to switch to the latter as soon as is feasible.
 Remember *_not_* to run Resilience and QoS simultaneously.
 
-## Runtime environment
-
 ### XRootD
 
 - Proxying through the xroot door is now available.  See the following properties:
@@ -355,6 +357,8 @@ xrootd.net.proxy.response-timeout-in-secs=30
 - Resolution of symlinks in path prefixes and paths is supported.
 
 - The efficiency of the stat list (ls -l) has been greatly improved.
+
+## Runtime environment
 
 ## New services
 
