@@ -53,6 +53,38 @@ cleaner-disk.cell.name=cleaner-disk2
 
 Also, an admin command was added to the hsm-cleaner cell that allows forgetting a tape-resident pnfsid, meaning removing any corresponding delete target entries from the cleaner’s trash table database.
 
+### Chimera
+
+
+Starting dCache version 9.1 chimera allows controlling the behaviour of the parent directory attribute update policy with configuration property `chimera.attr-consistency`, which takes the following values:
+
+
+| policy | behaviour                                                                                                                                                                                                                                   |
+|:-------|----------------------------------------------------------------------------------------------|
+| strong | a creation of a filesystem object will right away update the parent directory's mtime, ctime, nlink and generation attributes                                                                                                                   |
+| weak   | a creation of a filesystem object will eventually update (after 30 seconds) the parent directory's mtime, ctime, nlink and generation attributes. Multiple concurrent modifications to a directory are aggregated into a single attribute update. |
+| soft   | same as weak, however, reading of directory attributes will take into account pending attribute updates.  
+
+
+Read-write exported NFS doors SHOULD run with strong consistency or soft consistency to maintain POSIX compliance. Read-only NFS doors might run with weak consistency if non-up-to-date directory attributes can be tolerated, for example, when accessing existing data, or soft consistency, if up-to-date information is desired, typically when seeking newly arrived files through other doors.
+
+### PnfsManager
+
+To remove unused directory tags chimera keeps the reference count (nlink) of tags. This approach creates a ‘hot’ record that serializes all updates to a given top-level tag. Starting 9.2 dCache doesn’t
+rely on ref count anymore and uses conditional DELETE, which should improve the concurrent directory creation/deletion rate.
+
+
+### NFS
+
+Prior to version 9.2 dCache, to support RHEL6-based clients, if no export options are specified, the NFSv4.1 door was publishing only the nfs4_1_files layout. Now on the door publishes all available layout types. If for whatever reason RHEL6 clients are still used, the old behaviour can be enforced by the `lt=nfsv4_1_files` export option.
+
+### Pool
+
+Typically, when dCache interacts with an HSM, there is a timeout on how long such requests can stay in the HSM queue. Despite the fact that those timeouts are HSM-specific, dCache comes with its own default values, which are usually incorrect, so admins usually end up explicitly setting them. Starting with version 9.0, the default timeout has been removed. This means that there is no timeout for HSM operations unless explicitly set by admins.
+
+>    NOTE: this change is unlikely to break existing setups, as previous timeout values are already stored in the pool setup file.
+
+In addition, a new command `sh|rh|rm unset timeout` has been added to drop defined timeouts.
 
 
 ## Runtime environment
