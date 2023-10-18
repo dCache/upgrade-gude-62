@@ -230,10 +230,53 @@ In addition, a new command `sh|rh|rm unset timeout` has been added to drop defin
     Please consult the cookbook chapter on QoS policies for further details.
 
 -   In conformity with the new rule engine changes, the scanner has been modified in terms of
-    how it runs scans.   There are now two types of system scans, the (NEARLINE) QoS scans
-    (to ensure that files with a policy requiring them to be flushed have indeed been written
-    to tape) and a system-wide ONLINE scan (there are two versions of this and an option to 
-    choose which one).  Details in the Book; also refer to the relevant admin commands.
+    how it runs scans.
+    
+    The scan period refers to the default amount of time between sweeps to check for timeouts.
+    
+    The scan windows refer to the amount of time between scheduled periodic system diagnostic scans.
+
+    QOS NEARLINE refers to files whose QoS policy is defined and whose RP is NEARLINE CUSTODIAL.
+    ONLINE refers to scans of all files with persistent copies, whether or not they are 
+    REPLICA or CUSTODIAL.
+
+    ONLINE scanning is done by a direct query to the namespace, and is batched
+    into requests determined by the batch size.  Unlike with resilience, this
+    kind of scan will only touch each inode entry once (whereas pool scans may overlap
+    when multiple replicas are involved).
+    
+    On the other hand, a general pool scan will only look at files on pools that are
+    currently IDLE and UP, so those that are excluded or (temporarily) unattached
+    will be skipped.   This avoids generating a lot of alarms concerning files without
+    disk copies that should exist.
+    
+    The direct ONLINE scan is enabled by default.  To use the pool scan instead, disable
+    "online" either via the property or the admin reset command.  Be aware, however, that
+    unlike resilience, all pools will be scanned, not just those in the resilient/primary
+    groups; thus the online window should be set to accommodate the amount of time it
+    will take to cycle through the entire set of pools this way. Needless to say, doing
+    a direct ONLINE scan probably will take less time than a general pool scan.
+
+    The batch size for a direct ONLINE scan is lowered to serve as an implicit backgrounding or
+    de-prioritization (since the scan is done in batches, this allows for preemption by
+    QOS scans if they are running concurrently).
+
+    The relevant properties;
+
+    ```
+    qos.limits.scanner.scan-period
+    qos.limits.scanner.scan-period.unit
+    qos.limits.scanner.qos-nearline-window
+    qos.limits.scanner.qos-nearline-window.unit
+    qos.limits.scanner.enable.online-scan
+    qos.limits.scanner.online-window=2
+    qos.limits.scanner.online-window.unit
+    qos.limits.scanner.qos-nearline-batch-size
+    qos.limits.scanner.online-batch-size
+    
+    ```
+
+    More details available in the Book.  Scans can also be triggered manually:
 
     ```
     \h sys scan 
@@ -314,6 +357,4 @@ xrootd.net.proxy.response-timeout-in-secs=30
 - The efficiency of the stat list (ls -l) has been greatly improved.
 
 ## New services
-
-
 
