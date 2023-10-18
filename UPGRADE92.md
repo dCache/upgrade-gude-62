@@ -42,10 +42,10 @@ How to get from dCache 8.2 to dCache 9.2
     the `bulk.limits.dir-list-semaphore` and `bulk.limits.in-flight-semaphore`
     values, along with rate limiters on the endpoints (`bulk.limits.pin-manager-rate-per-second`,
     `bulk.limits.pnfs-manager-rate-per-second`, `bulk.limits.qos-engine-rate-per-second`).  
-    The thread pools have also changed somewhat; `bulk.limits.delay-clear-threads` and
-    `bulk.limits.delay-clear-threads`, `bulk.limits.dir-list-threads` and 
-    `bulk.limits.activity-callback-threads` are no longer used.   It is anticipated that
-    adjustments to these defaults should not be necessary under normal loads.
+    The thread pools have also changed somewhat; `bulk.limits.delay-clear-threads`, 
+    `bulk.limits.dir-list-threads` and `bulk.limits.activity-callback-threads` are no longer used.   
+    
+    It is anticipated that adjustments to these defaults should not be necessary under normal loads.
 
 -   Periodic archiving of requests has been added; this is configurable via properties
     and admin commands.  The properties:
