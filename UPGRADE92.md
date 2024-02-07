@@ -33,6 +33,7 @@ database
 - Starting version 9.1 the nlink count for directories shows only number of subdirectories. Thus, the existing nlink count can be out-of-sync with we no automatic re-synchronization is performed.
 - dropped gplazma support for XACML
 - pool binds TCP port for http and xroot movers on startup
+- The `cleaner` cell name no longer exists, the service now consists of two cells: `cleaner-disk` and `cleaner-hsm`
 
 ### Bulk
 
