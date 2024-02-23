@@ -20,7 +20,11 @@ How to get from dCache 8.2 to dCache 9.2
 Consequences:
 - When upgrading from 8.2 to 9.2, you need to upgrade the entire instance
 - If you run srm-manager, you need to clean `/var/lib/dcache/credentials`, `srmrequestcredentials` and  all entries in the `*requests` and `*filerequests` tables from the srm
-database  
+database. To do so, run the following on the SRM database:
+```
+truncate srmrequestcredentials;
+truncate srmuser cascade;
+```
   
 
 ### General incompatibilities
